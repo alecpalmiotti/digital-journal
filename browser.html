@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Journal · Figure Browser</title>
+<link rel="stylesheet" href="style.css?v=7">
+</head>
+<body>
+
+<!-- ── Shared topbar (injected by nav.js) ─────────────────────────── -->
+<header class="topbar" id="shared-topbar"></header>
+<script src="nav.js?v=1"></script>
+<div class="topbar-meta-bar" style="background:var(--card-bg);border-bottom:1px solid var(--border);padding:0.3rem 2rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--muted)">
+  <span id="manifest-stamp">manifest: loading…</span>
+</div>
+
+<!-- ── App ────────────────────────────────────────────────────────── -->
+<div class="app">
+
+  <!-- Sidebar: filters -->
+  <aside class="sidebar">
+
+    <h3>Search</h3>
+    <div class="search-box">
+      <input id="search-input" type="text" placeholder="title, description, tags…" autocomplete="off">
+    </div>
+
+    <h3>
+      Projects
+      <button class="clear-btn" data-clear="projects">clear</button>
+    </h3>
+    <div class="chip-group" id="filter-projects"></div>
+
+    <h3>
+      Runs
+      <button class="clear-btn" data-clear="runs">clear</button>
+    </h3>
+    <div class="chip-group" id="filter-runs"></div>
+
+    <h3>
+      Tags
+      <button class="clear-btn" data-clear="tags">clear</button>
+    </h3>
+    <div class="chip-group" id="filter-tags"></div>
+
+    <h3>
+      Date created
+      <button class="clear-btn" data-clear="dates">clear</button>
+    </h3>
+    <div class="date-row">
+      <input id="date-from" type="date" aria-label="From">
+      <input id="date-to"   type="date" aria-label="To">
+    </div>
+
+  </aside>
+
+  <!-- Main: toolbar + grid -->
+  <main class="main">
+    <div class="toolbar">
+      <div class="results">
+        <strong id="results-count">0</strong> figure<span id="results-plural">s</span>
+        <span id="results-of-total" style="color:var(--muted)"></span>
+      </div>
+      <div class="controls">
+        <label for="sort-select">Sort by</label>
+        <select id="sort-select">
+          <option value="recency">Newest first</option>
+          <option value="recency-asc">Oldest first</option>
+          <option value="project">Project</option>
+          <option value="run">Run</option>
+          <option value="title">Title</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="empty-state" id="empty-state" style="display:none">
+      <div class="icon">⌕</div>
+      <div>No figures match the current filters.</div>
+    </div>
+  </main>
+
+</div>
+
+<!-- ── Modal ──────────────────────────────────────────────────────── -->
+<div class="modal-backdrop" id="modal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-image" id="modal-image-container">
+      <button class="close-btn" id="modal-close" aria-label="Close">×</button>
+      <!-- image inserted dynamically by JS -->
+    </div>
+    <div class="modal-meta" id="modal-meta"><!-- populated by JS --></div>
+  </div>
+</div>
+
+<!-- ── Toast ──────────────────────────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<!-- ── Data + logic ───────────────────────────────────────────────── -->
+<script src="manifest.js?v=7"></script>
+<script src="journal_data.js?v=7"></script>
+<script src="browser.js?v=7"></script>
+
+</body>
+</html>

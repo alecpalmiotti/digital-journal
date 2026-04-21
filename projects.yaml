@@ -1,0 +1,21 @@
+# Digital Journal - project registry
+# ----------------------------------
+# Each entry registers a project for indexing. The indexer walks
+# <root>/figures/<run>/*.png and emits a single manifest.js consumed
+# by browser.html and journal.html.
+#
+# To add a project:
+#   1. Add a 3-line block below
+#   2. Run: bash refresh.sh
+#
+# Optional fields per project:
+#   description: short human-readable label (shown in UI)
+#   tags:        default tags applied to every figure in this project
+#                (used as fallback when a .meta.yaml omits its own tags)
+
+projects:
+
+  example_project:
+    root: /path/to/your/project
+    description: "My research project"
+    tags: [example]

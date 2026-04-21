@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Journal · Research Journal</title>
+<link rel="stylesheet" href="style.css?v=7">
+<style>
+/* ── Journal-specific styles ──────────────────────────────────────── */
+.journal-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem 6rem;
+}
+.journal-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+  flex-wrap: wrap;
+}
+.journal-toolbar .left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.journal-toolbar .left strong { color: var(--text); font-weight: 600; }
+.journal-toolbar .right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ── Filter bar ──────────────────────────────────────────────────── */
+.journal-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1.4rem;
+  flex-wrap: wrap;
+}
+.journal-filters label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.journal-filters select,
+.journal-filters input[type="date"] {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  padding: 0.3em 0.5em;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+}
+.journal-filters .search-sm {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  padding: 0.35em 0.65em;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  width: 180px;
+}
+.journal-filters .search-sm:focus { outline: none; border-color: var(--accent); }
+
+/* ── Timeline entry ──────────────────────────────────────────────── */
+.timeline { list-style: none; }
+.timeline-entry {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+.timeline-entry:hover { box-shadow: var(--shadow-lg); }
+
+.entry-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.3rem 0.6rem;
+  flex-wrap: wrap;
+}
+.date-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #f8f6f1;
+  background: var(--accent2, #7a2034);
+  padding: 0.2em 0.65em;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.entry-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.entry-badges .project-chip {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15em 0.5em;
+  border-radius: 3px;
+  background: var(--accent3);
+  color: white;
+  white-space: nowrap;
+}
+.entry-badges .run-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.entry-badges .author-chip {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.entry-figure {
+  display: flex;
+  gap: 1.3rem;
+  padding: 0.8rem 1.3rem;
+  align-items: flex-start;
+}
+.entry-figure .thumb-container {
+  flex: 0 0 400px;
+  cursor: pointer;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  transition: border-color 0.15s;
+}
+.entry-figure .thumb-container:hover { border-color: var(--accent); }
+.entry-figure .thumb-container img {
+  width: 100%;
+  display: block;
+  object-fit: contain;
+}
+.entry-figure .entry-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.entry-fig-title {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+.entry-fig-title a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--border);
+}
+.entry-fig-title a:hover { border-color: var(--accent); color: var(--accent); }
+
+.entry-commentary {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: #2a2522;
+  white-space: pre-wrap;
+  cursor: pointer;
+  padding: 0.5rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: border-color 0.15s, background 0.15s;
+}
+.entry-commentary:hover {
+  border-color: var(--border);
+  background: var(--bg);
+}
+.entry-commentary p { margin: 0 0 0.4em; }
+.entry-commentary strong { font-weight: 700; }
+.entry-commentary em { font-style: italic; }
+.entry-commentary code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  background: var(--code-bg);
+  padding: 0.05em 0.3em;
+  border-radius: 2px;
+}
+.entry-commentary a { color: var(--accent); }
+
+.entry-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0 1.3rem 0.3rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+}
+.entry-tags .t {
+  background: var(--code-bg);
+  color: var(--muted);
+  padding: 0.12em 0.45em;
+  border-radius: 3px;
+}
+
+/* ── Collapsible metadata ─────────────────────────────────────────── */
+.entry-details {
+  border-top: 1px dashed var(--border);
+  margin: 0 1.3rem;
+}
+.entry-details summary {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.6rem 0;
+  user-select: none;
+}
+.entry-details summary:hover { color: var(--accent); }
+.entry-details[open] summary { color: var(--accent); }
+.entry-details .detail-body {
+  padding: 0 0 0.8rem;
+}
+
+/* ── Edit mode ────────────────────────────────────────────────────── */
+.edit-area {
+  width: 100%;
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 0.6em 0.7em;
+  background: white;
+  border: 1.5px solid var(--accent);
+  border-radius: 6px;
+  resize: vertical;
+  min-height: 100px;
+  color: var(--text);
+}
+.edit-area:focus { outline: none; box-shadow: 0 0 0 3px rgba(78,121,167,0.15); }
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  align-items: center;
+}
+
+/* ── Entry footer ─────────────────────────────────────────────────── */
+.entry-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.5rem 1.3rem 0.8rem;
+}
+
+/* ── Empty state ──────────────────────────────────────────────────── */
+.journal-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--muted);
+  font-family: 'Inter', sans-serif;
+}
+.journal-empty .icon { font-size: 2.5rem; opacity: 0.3; margin-bottom: 0.5rem; }
+
+/* ── Text-only entries ────────────────────────────────────────────── */
+.entry-text-only {
+  padding: 0.4rem 1.3rem 1rem;
+}
+.entry-text-only .entry-fig-title {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+.entry-text-only .entry-commentary {
+  font-size: 1.02rem;
+  line-height: 1.7;
+  columns: auto;
+}
+
+/* ── Section headers in commentary (== HEADING ==) ───────────────── */
+.entry-commentary .section-header {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--journal-accent, var(--accent));
+  margin: 1.2em 0 0.4em;
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid var(--border);
+}
+.entry-commentary .section-header:first-child { margin-top: 0; }
+
+.entry-commentary ul {
+  margin: 0.3em 0 0.6em 1.2em;
+  padding: 0;
+}
+.entry-commentary ul li {
+  margin-bottom: 0.25em;
+  line-height: 1.55;
+}
+
+/* Text-only entry accent stripe */
+.timeline-entry.text-only {
+  border-left: 3px solid var(--journal-accent, var(--accent));
+}
+
+/* ── Responsive ───────────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .entry-figure {
+    flex-direction: column;
+  }
+  .entry-figure .thumb-container {
+    flex: none;
+    width: 100%;
+    max-width: 400px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Shared topbar (injected by nav.js) ─────────────────────────── -->
+<header class="topbar" id="shared-topbar"></header>
+<script src="nav.js?v=1"></script>
+<div class="topbar-meta-bar" style="background:var(--card-bg);border-bottom:1px solid var(--border);padding:0.3rem 2rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--muted)">
+  <span id="journal-stamp">loading…</span>
+</div>
+
+<!-- ── Main content ───────────────────────────────────────────────── -->
+<div class="journal-main">
+
+  <!-- Filters -->
+  <div class="journal-filters" id="journal-filters">
+    <input class="search-sm" type="text" id="j-search" placeholder="Search commentary…" autocomplete="off">
+    <label>Project</label>
+    <select id="j-project"><option value="">All projects</option></select>
+    <label>From</label>
+    <input type="date" id="j-date-from">
+    <label>To</label>
+    <input type="date" id="j-date-to">
+    <label>Tag</label>
+    <select id="j-tag"><option value="">All tags</option></select>
+    <label>Font</label>
+    <select id="j-font">
+      <option value="garamond">EB Garamond</option>
+      <option value="inter">Inter</option>
+      <option value="georgia">Georgia</option>
+      <option value="palatino">Palatino</option>
+      <option value="system">System</option>
+      <option value="mono">Monospace</option>
+    </select>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="journal-toolbar">
+    <div class="left">
+      <strong id="j-count">0</strong> <span id="j-count-label">entries</span>
+    </div>
+    <div class="right">
+      <button class="btn" id="btn-export-json">Export JSON</button>
+      <button class="btn primary" id="btn-export-html">Export standalone HTML</button>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <ol class="timeline" id="timeline"></ol>
+
+  <!-- Empty state -->
+  <div class="journal-empty" id="journal-empty" style="display:none">
+    <div class="icon">&#128221;</div>
+    <div>No journal entries yet.</div>
+    <div style="margin-top:0.5rem; font-size:0.85rem;">
+      Open the <a href="browser.html">Figure Browser</a>, write commentary, and click "Generate Claude prompt" to add entries.
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Lightbox (click image to expand) ────────────────────────────── -->
+<div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(26,16,24,0.88);z-index:200;cursor:pointer;overflow:auto;-webkit-overflow-scrolling:touch"
+     onclick="this.style.display='none';document.body.style.overflow=''">
+  <img id="lightbox-img" style="display:block;max-width:95%;margin:2rem auto;border-radius:6px;background:white;padding:8px;cursor:default" onclick="event.stopPropagation()" alt="">
+</div>
+
+<!-- ── Toast ──────────────────────────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<!-- ── Data + logic ───────────────────────────────────────────────── -->
+<script src="manifest.js?v=8"></script>
+<script src="journal_data.js?v=8"></script>
+<script src="journal.js?v=8"></script>
+
+</body>
+</html>
