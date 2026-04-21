@@ -1,0 +1,66 @@
+# CLAUDE.md -- [Your Lab Name]
+
+<!-- Copy this file to your workspace root (the parent of digital_journal/) -->
+<!-- and fill in the sections below. This helps AI agents understand your    -->
+<!-- workspace when you ask them for help.                                   -->
+<!-- Delete these HTML comments once you've filled everything in.            -->
+
+## Workspace overview
+
+This is the workspace for **[Your Lab Name / Your Name]**.
+
+Research focus: [Brief description of what your lab studies]
+
+## Folder layout
+
+```
+[your_workspace]/
+  CLAUDE.md                    <-- this file
+  digital_journal/             <-- research figure journal (see digital_journal/CLAUDE.md)
+  [project_1]/                 <-- [short description]
+    figures/                   <-- indexed by the journal
+    ...
+  [project_2]/                 <-- [short description]
+    figures/
+    ...
+```
+
+<!-- List your actual projects below. Copy the block for each project. -->
+
+## Projects
+
+### [project_1]
+- **Description:** [What this project studies]
+- **Key data:** [Where raw data lives, what format]
+- **Status:** [active / complete / on hold]
+
+### [project_2]
+- **Description:** [What this project studies]
+- **Key data:** [Where raw data lives, what format]
+- **Status:** [active / complete / on hold]
+
+## Rules and conventions
+
+- All analysis scripts that produce figures should use `save_figure()` from `digital_journal/fig_io.py`
+- After any pipeline run that generates figures, run `bash digital_journal/refresh.sh`
+- Update the research journal regularly with observations about new figures
+- Use consistent tags across projects (list your standard tags below)
+
+### Standard tags
+<!-- Define tags your lab uses consistently. Examples: -->
+- `qc` -- quality control figures
+- `clustering` -- cluster analysis results
+- `spatial` -- spatial/imaging data
+- `publication` -- publication-ready figures
+
+## Environment
+
+- **Python environment:** [How to activate -- e.g., `conda activate myenv`]
+- **Required packages:** pyyaml (mandatory), Pillow (optional, for image dimensions)
+- **Platform:** [macOS / Linux / HPC cluster name]
+
+## For more detail
+
+- Journal-specific instructions: see `digital_journal/CLAUDE.md`
+- Figure browser, journal UI, and ideas tracker: open `digital_journal/browser.html`
+- How `save_figure()` works: see docstring in `digital_journal/fig_io.py`
